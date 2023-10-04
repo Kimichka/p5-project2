@@ -1,6 +1,11 @@
 from flask import jsonify, request
 from app import app, db
 from .models import Game, User
+from flask_login import login_user, current_user, logout_user
+from app import login_manager
+
+
+
 
 # CRUD for Game Model
 @app.route('/games', methods=['POST'])
@@ -54,3 +59,22 @@ def login():
 @app.errorhandler(404)
 def not_found(e):
     return jsonify(error=str(e)), 404
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route('/login', methods=['POST'])
+def login():
+    if current_user.is_authenticated:
+        return jsonify(success=True)
+    user = User.query.filter_by(username=request.json['username']).first()
+    if user and user.check_password(request.json['password']):
+        login_user(user)
+        return jsonify(success=True)
+    return jsonify(success=False), 401
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return jsonify(success=True)
