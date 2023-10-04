@@ -2,7 +2,7 @@ from flask import jsonify, request
 from app import app, db
 from .models import Game, User
 
-# CRUD Operations for Game Model
+# CRUD for Game Model
 @app.route('/games', methods=['POST'])
 def create_game():
     game = Game(title=request.json['title'])
@@ -47,11 +47,10 @@ def register():
 def login():
     user = User.query.filter_by(username=request.json['username']).first()
     if user and user.check_password(request.json['password']):
-        # Here you can generate a token or create a session
         return jsonify(success=True)
     return jsonify(success=False), 401
 
-# Error Handling (simple example for 404)
+# Error Handling 
 @app.errorhandler(404)
 def not_found(e):
     return jsonify(error=str(e)), 404
