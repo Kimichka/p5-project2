@@ -39,7 +39,7 @@ class User(db.Model):
             raise AssertionError('Username must be between 4 and 50 characters')
         return username
 
-# Adjusted the many-to-many relationship
+
 class TradeDetail(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), primary_key=True)

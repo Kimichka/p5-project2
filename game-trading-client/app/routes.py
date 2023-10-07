@@ -1,11 +1,8 @@
 from flask import jsonify, request
-from app import app, db
+from app import app, db, bcrypt
 from .models import Game, User
 from flask_login import login_user, current_user, logout_user
 from app import login_manager
-
-
-
 
 # CRUD for Game Model
 @app.route('/games', methods=['POST'])
@@ -42,18 +39,45 @@ def delete_game(id):
 # User Registration & Login
 @app.route('/register', methods=['POST'])
 def register():
-    user = User(username=request.json['username'])
-    user.set_password(request.json['password'])
-    db.session.add(user)
+    username = request.json['username']
+    password = request.json['password']
+    
+    if not username or not password:
+        return jsonify(message="Username and password required."), 400
+
+    user = User.query.filter_by(username=username).first()
+
+    if user:
+        return jsonify(message="Username already exists."), 400
+
+    new_user = User(username=username)
+    new_user.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    db.session.add(new_user)
     db.session.commit()
-    return jsonify(user.id), 201
+
+    return jsonify(message="User created successfully."), 201
 
 @app.route('/login', methods=['POST'])
 def login():
-    user = User.query.filter_by(username=request.json['username']).first()
-    if user and user.check_password(request.json['password']):
+    if current_user.is_authenticated:
         return jsonify(success=True)
+
+    username = request.json['username']
+    password = request.json['password']
+
+    user = User.query.filter_by(username=username).first()
+
+    if user and bcrypt.check_password_hash(user._password, password):
+        login_user(user)
+        return jsonify(success=True)
+
     return jsonify(success=False), 401
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return jsonify(success=True)
 
 # Error Handling 
 @app.errorhandler(404)
@@ -64,17 +88,15 @@ def not_found(e):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@app.route('/login', methods=['POST'])
-def login():
-    if current_user.is_authenticated:
-        return jsonify(success=True)
-    user = User.query.filter_by(username=request.json['username']).first()
-    if user and user.check_password(request.json['password']):
-        login_user(user)
-        return jsonify(success=True)
-    return jsonify(success=False), 401
+# Optional seed function
+def seed_default_user():
+    default_user = User.query.filter_by(username="testuser").first()
 
-@app.route('/logout')
-def logout():
-    logout_user()
-    return jsonify(success=True)
+    if not default_user:
+        user = User(username="testuser")
+        user.password = bcrypt.generate_password_hash("testpassword").decode('utf-8')
+        db.session.add(user)
+        db.session.commit()
+        print("Default user added.")
+    else:
+        print("Default user already exists.")
