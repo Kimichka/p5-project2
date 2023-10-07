@@ -16,7 +16,8 @@ function App() {
         <Route path="/games" component={GameList} />
         <Route path="/profile" component={UserProfile} />
         <Route path="/register" component={Register} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" component={Login} />
+        
         
       </Switch>
     </Router>
@@ -24,3 +25,4 @@ function App() {
 }
 
 export default App;
+
