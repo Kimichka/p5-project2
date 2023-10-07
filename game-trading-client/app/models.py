@@ -4,7 +4,11 @@ from sqlalchemy.orm import validates
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
+    image_url = db.Column(db.String(255), nullable=True) 
+    description = db.Column(db.Text, nullable=True) 
+    console = db.Column(db.String(80), nullable=True)  
     trade_details = db.relationship('TradeDetail', backref='game', lazy=True)
+    comments = db.relationship('Comment', backref='game', lazy=True)  
 
     @validates('title')
     def validate_title(self, key, title):
@@ -19,6 +23,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     _password = db.Column(db.String(120), nullable=False)
     trade_details = db.relationship('TradeDetail', backref='trader', lazy=True)
+    comments = db.relationship('Comment', backref='author', lazy=True)  
+    favorites = db.relationship('Favorite', backref='user', lazy=True)  
 
     @property
     def password(self):
@@ -39,12 +45,22 @@ class User(db.Model):
             raise AssertionError('Username must be between 4 and 50 characters')
         return username
 
-
 class TradeDetail(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), primary_key=True)
     user = db.relationship(User, back_populates="trade_details")
     game = db.relationship(Game, back_populates="trade_details")
+
+class Comment(db.Model):  # New Model
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class Favorite(db.Model):  # New Model
+    id = db.Column(db.Integer, primary_key=True)
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class Platform(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -57,4 +73,3 @@ class Platform(db.Model):
         if len(name) < 2 or len(name) > 50:
             raise AssertionError('Platform name must be between 2 and 50 characters')
         return name
-
