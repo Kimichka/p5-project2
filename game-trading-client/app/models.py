@@ -4,11 +4,11 @@ from sqlalchemy.orm import validates
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
-    image_url = db.Column(db.String(255), nullable=True) 
-    description = db.Column(db.Text, nullable=True) 
-    console = db.Column(db.String(80), nullable=True)  
+    image_url = db.Column(db.String(255), nullable=True)  # New Field
+    description = db.Column(db.Text, nullable=True)  # New Field
+    console = db.Column(db.String(80), nullable=True)  # New Field
     trade_details = db.relationship('TradeDetail', backref='game', lazy=True)
-    comments = db.relationship('Comment', backref='game', lazy=True)  
+    comments = db.relationship('Comment', backref='game', lazy=True)  # New Relation
 
     @validates('title')
     def validate_title(self, key, title):
@@ -23,8 +23,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     _password = db.Column(db.String(120), nullable=False)
     trade_details = db.relationship('TradeDetail', backref='trader', lazy=True)
-    comments = db.relationship('Comment', backref='author', lazy=True)  
-    favorites = db.relationship('Favorite', backref='user', lazy=True)  
+    comments = db.relationship('Comment', backref='author', lazy=True)  # New Relation
+    favorites = db.relationship('Favorite', backref='user', lazy=True)  # New Relation
 
     @property
     def password(self):
