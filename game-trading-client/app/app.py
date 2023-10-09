@@ -33,8 +33,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 class GameList(Resource):
     def post(self):
-        
-        pass
+        pass  # Implementation to add game
 
 @app.route('/')
 def index():
@@ -42,35 +41,40 @@ def index():
 
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
+    try:
+        data = request.get_json()
+        username = data['username']
+        password = data['password']
 
-    # Check if the user already exists
-    existing_user = User.query.filter_by(username=username).first()
-    if existing_user:
-        return jsonify({'message': 'Username already exists.'}), 400
-    
-    # Hash the password and save to the database
-    hashed_password = generate_password_hash(password, method='sha256')
-    new_user = User(username=username, password=hashed_password)
-    db.session.add(new_user)
-    db.session.commit()
+        # Check if the user already exists
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return jsonify({'message': 'Username already exists.'}), 400
+        
+        # Hash the password and save to the database
+        hashed_password = generate_password_hash(password, method='sha256')
+        new_user = User(username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
 
-    return jsonify({'message': 'Registration successful'})
+        return jsonify({'message': 'Registration successful'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
-    username = data['username']
-    password = data['password']
-    
-    user = User.query.filter_by(username=username).first()
-    if user and check_password_hash(user.password, password):
-        return jsonify({'authenticated': True})
-    else:
-        return jsonify({'authenticated': False, 'message': 'Invalid credentials'})
-
+    try:
+        data = request.get_json()
+        username = data['username']
+        password = data['password']
+        
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            return jsonify({'authenticated': True})
+        else:
+            return jsonify({'authenticated': False, 'message': 'Invalid credentials'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
