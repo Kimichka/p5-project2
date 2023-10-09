@@ -1,18 +1,26 @@
+import logging
 from flask import jsonify, request
 from app import app, db, bcrypt
-from .models import Game, User, Comment, Favorite
+from .models import Game, User, Comment, Favorite, Platform
 from flask_login import login_user, current_user, logout_user
 from app import login_manager
+from sqlalchemy.exc import IntegrityError
 
-# CRUD for Game Model
+# Enable debug
+logging.basicConfig(level=logging.DEBUG)
+
+# CRUD for Game
 @app.route('/games', methods=['POST'])
 def create_game():
     title = request.json['title']
     image_url = request.json.get('image_url', None)
     description = request.json.get('description', None)
-    console = request.json.get('console', None)
+    console_name = request.json.get('console', None)
+    platform = Platform.query.filter_by(name=console_name).first()
+    if not platform:
+        return jsonify(error="Invalid platform name."), 400
 
-    game = Game(title=title, image_url=image_url, description=description, console=console)
+    game = Game(title=title, image_url=image_url, description=description, console_id=platform.id)
     db.session.add(game)
     db.session.commit()
 
@@ -42,7 +50,7 @@ def delete_game(id):
     db.session.commit()
     return '', 204
 
-# CRUD for Comments on Games
+# CRUD for Comments
 @app.route('/games/<int:game_id>/comments', methods=['POST'])
 def create_comment(game_id):
     content = request.json['content']
@@ -100,9 +108,12 @@ def remove_favorite(game_id):
 def register():
     username = request.json['username']
     password = request.json['password']
+    password_confirmation = request.json.get('password_confirmation')
     
     if not username or not password:
         return jsonify(message="Username and password required."), 400
+    if password != password_confirmation:
+        return jsonify(message="Passwords do not match."), 400
 
     user = User.query.filter_by(username=username).first()
 
@@ -113,9 +124,15 @@ def register():
     new_user.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify(message="User created successfully."), 201
+    
+    try:
+        db.session.commit()
+        return jsonify(message="User created successfully."), 201
+    except IntegrityError as e:
+        db.session.rollback()  
+        return jsonify(message="Username already exists."), 400
+    except Exception as e:
+        return jsonify(message="Registration failed. Try again."), 500
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -127,17 +144,16 @@ def login():
 
     user = User.query.filter_by(username=username).first()
 
-    if user and bcrypt.check_password_hash(user._password, password):
+    if user and user.verify_password(password): 
         login_user(user)
         return jsonify(success=True)
 
-    return jsonify(success=False), 401
+    return jsonify(success=False, message="Invalid username or password."), 401
 
 @app.route('/logout')
 def logout():
     logout_user()
     return jsonify(success=True)
-
 
 @app.errorhandler(404)
 def not_found(e):
@@ -147,7 +163,7 @@ def not_found(e):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Optional seed function
+# seed function
 def seed_default_user():
     default_user = User.query.filter_by(username="testuser").first()
 
