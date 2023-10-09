@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-function GameTable(props) {
+function GameTable({ games }) {
     return (
         <table>
             <thead>
@@ -9,7 +10,7 @@ function GameTable(props) {
                 </tr>
             </thead>
             <tbody>
-                {props.games.map(game => (
+                {games.map(game => (
                     <tr key={game.id}>
                         <td>{game.title}</td>
                     </tr>
@@ -18,5 +19,18 @@ function GameTable(props) {
         </table>
     );
 }
+
+GameTable.propTypes = {
+    games: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            title: PropTypes.string.isRequired
+        })
+    ).isRequired
+};
+
+GameTable.defaultProps = {
+    games: []
+};
 
 export default GameTable;
