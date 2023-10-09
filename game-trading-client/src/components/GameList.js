@@ -7,7 +7,7 @@ function GameList() {
 
     const fetchGames = async () => {
         try {
-            const response = await fetch('http://localhost:5000/games'); // Adjust the URL if your backend is running on a different address
+            const response = await fetch('http://localhost:5555/games');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -18,6 +18,11 @@ function GameList() {
         }
     };
 
+    
+    const handleNewGame = async () => {
+        await fetchGames();
+    };
+
     useEffect(() => {
         fetchGames();
     }, []);
@@ -25,7 +30,8 @@ function GameList() {
     return (
         <div>
             <h2>Game List</h2>
-            <GameForm onNewGame={fetchGames} />
+            
+            <GameForm onSuccess={handleNewGame} />
             <GameTable games={games} />
         </div>
     );

@@ -5,18 +5,14 @@ function CommentSection(props) {
     const [newComment, setNewComment] = useState('');
 
     const handleAddComment = async () => {
-        // Submit the new comment to your backend API
-        const response = await fetch(`/games/${props.gameId}/comments`, {
+        const response = await fetch(`http://localhost:5555/games/${props.gameId}/comments`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ content: newComment }),
         });
 
         const data = await response.json();
         if (response.ok) {
-            // Add the new comment to our local state to update the UI
             setComments([...comments, data]);
             setNewComment('');
         }
@@ -31,10 +27,7 @@ function CommentSection(props) {
                 ))}
             </ul>
             <div>
-                <textarea 
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)} 
-                />
+                <textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} />
                 <button onClick={handleAddComment}>Add Comment</button>
             </div>
         </div>

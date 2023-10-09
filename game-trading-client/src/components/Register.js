@@ -1,59 +1,100 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import React from 'react';
+import { useFormik } from 'formik';
 
-const RegistrationSchema = Yup.object().shape({
-    username: Yup.string()
-        .min(4, 'Too Short!')
-        .max(50, 'Too Long!')
-        .required('Required'),
-    password: Yup.string()
-        .min(8, 'Too Short!')
-        .required('Required')
-});
+function Register() {
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            password: '',
+            confirmPassword: ''
+        },
+        onSubmit: values => {
+            fetch('http://localhost:5555/register', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: values.username,
+                    password: values.password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                } else {
+                    alert("Registration successful.");
+                }
+            })
+            .catch(error => {
+                console.error("Error during registration:", error);
+                alert("Registration failed. Please try again.");
+            });
+        },
+        validate: values => {
+            let errors = {};
 
-const Register = () => {
-    const [errorMessage, setErrorMessage] = useState(null);
-    const history = useHistory();
-
-    const handleRegistration = async (values) => {
-        try {
-            const response = await axios.post('/register', values);
-            if (response.status === 201) {
-                history.push('/login');
+            if (!values.username) {
+                errors.username = 'Required';
             }
-        } catch (error) {
-           
-            setErrorMessage("Registration failed!");
+
+            if (!values.password) {
+                errors.password = 'Required';
+            }
+
+            if (values.password !== values.confirmPassword) {
+                errors.confirmPassword = 'Passwords must match';
+            }
+
+            return errors;
         }
-    };
+    });
 
     return (
-        <Formik
-            initialValues={{ username: '', password: '' }}
-            validationSchema={RegistrationSchema}
-            onSubmit={handleRegistration}
-        >
-            {() => (
-                <Form>
-                    <div>
-                        <label>Username:</label>
-                        <Field name="username" />
-                        <ErrorMessage name="username" component="div" />
-                    </div>
-                    <div>
-                        <label>Password:</label>
-                        <Field name="password" type="password" />
-                        <ErrorMessage name="password" component="div" />
-                    </div>
-                    <button type="submit">Register</button>
-                    {errorMessage && <div>{errorMessage}</div>}
-                </Form>
-            )}
-        </Formik>
+        <form onSubmit={formik.handleSubmit}>
+            <div>
+                <label>Username</label>
+                <input 
+                    type="text" 
+                    name="username" 
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.username}
+                />
+                {formik.touched.username && formik.errors.username ? (
+                    <div>{formik.errors.username}</div>
+                ) : null}
+            </div>
+            <div>
+                <label>Password</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password}
+                />
+                {formik.touched.password && formik.errors.password ? (
+                    <div>{formik.errors.password}</div>
+                ) : null}
+            </div>
+            <div>
+                <label>Confirm Password</label>
+                <input 
+                    type="password" 
+                    name="confirmPassword" 
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.confirmPassword}
+                />
+                {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+                    <div>{formik.errors.confirmPassword}</div>
+                ) : null}
+            </div>
+            <button type="submit">Register</button>
+        </form>
     );
-};
+}
 
 export default Register;

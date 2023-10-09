@@ -7,9 +7,8 @@ function GameDetail() {
     const [game, setGame] = useState(null);
 
     useEffect(() => {
-        // Fetch the game details from your API by its ID
         const fetchGame = async () => {
-            const response = await fetch(`/games/${id}`);
+            const response = await fetch(`http://localhost:5555/games/${id}`);
             const data = await response.json();
             setGame(data);
         };

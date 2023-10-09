@@ -1,41 +1,81 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { useFormik } from 'formik';
 
-const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        axios.post('/login', { username, password })
-            .then(response => {
-                if (response.data.success) {
-                    // Handle successful login, like redirecting to a dashboard
+function Login() {
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            password: ''
+        },
+        onSubmit: values => {
+            fetch('http://localhost:5555/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: values.username,
+                    password: values.password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.authenticated) {
+                    alert("Login successful.");
                 } else {
-                    alert('Login failed');
+                    alert(data.message);
                 }
             })
             .catch(error => {
-                // Handle errors
-                alert('Error during login');
+                console.error("Error during login:", error);
+                alert("Login failed. Please try again.");
             });
-    };
+        },
+        validate: values => {
+            let errors = {};
+
+            if (!values.username) {
+                errors.username = 'Required';
+            }
+
+            if (!values.password) {
+                errors.password = 'Required';
+            }
+
+            return errors;
+        }
+    });
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username</label>
-                    <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
-                </div>
-                <div>
-                    <label>Password</label>
-                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
-                </div>
-                <button type="submit">Login</button>
-            </form>
-        </div>
+        <form onSubmit={formik.handleSubmit}>
+            <div>
+                <label>Username</label>
+                <input 
+                    type="text" 
+                    name="username" 
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.username}
+                />
+                {formik.touched.username && formik.errors.username ? (
+                    <div>{formik.errors.username}</div>
+                ) : null}
+            </div>
+            <div>
+                <label>Password</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password}
+                />
+                {formik.touched.password && formik.errors.password ? (
+                    <div>{formik.errors.password}</div>
+                ) : null}
+            </div>
+            <button type="submit">Login</button>
+        </form>
     );
 }
 
