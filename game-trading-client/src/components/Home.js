@@ -25,7 +25,7 @@ const Home = () => {
     return (
         <div style={styles.container}>
             <p style={styles.boldText}>Welcome to The Game Trading Website!</p>
-            <p style={styles.description}>Find and trade your favorite games with other users.</p>
+            <p style={styles.description}>Find and trade your favorite games with others.</p>
         </div>
     );
 };
