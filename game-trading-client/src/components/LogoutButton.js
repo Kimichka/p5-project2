@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 function LogoutButton() {
     const handleLogout = () => {
         fetch('http://localhost:5555/logout', {
