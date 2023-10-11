@@ -79,7 +79,7 @@ function Login() {
                 <button type="submit">Login</button>
             </form>
             
-            <LogoutButton /> {/* Add this line to render the Sign Out button */}
+            <LogoutButton />
         </div>
     );
 }

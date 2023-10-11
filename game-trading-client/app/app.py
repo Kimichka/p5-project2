@@ -113,8 +113,6 @@ def delete_game(game_id):
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    # Here you can invalidate the user's session or token, if you're using any
-    # For now, we'll just send a success message back
     return jsonify({'message': 'Logged out successfully'}), 200
 
 
