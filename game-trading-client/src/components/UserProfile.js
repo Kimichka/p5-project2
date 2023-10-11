@@ -24,8 +24,8 @@ const styles = {
 const UserProfile = () => {
     return (
         <div style={styles.container}>
-            <p style={styles.boldText}>Loading...</p>
-            <p style={styles.description}>The User Profile Page.</p>
+            <p style={styles.boldText}>The User Profile Page.</p>
+            <p style={styles.description}>Loading...</p>
         </div>
     );
 }
