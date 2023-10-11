@@ -1,5 +1,6 @@
 import React from 'react';
 import { useFormik } from 'formik';
+import LogoutButton from './LogoutButton';
 
 function Login() {
     const formik = useFormik({
@@ -47,35 +48,39 @@ function Login() {
     });
 
     return (
-        <form onSubmit={formik.handleSubmit}>
-            <div>
-                <label>Username</label>
-                <input 
-                    type="text" 
-                    name="username" 
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.username}
-                />
-                {formik.touched.username && formik.errors.username ? (
-                    <div>{formik.errors.username}</div>
-                ) : null}
-            </div>
-            <div>
-                <label>Password</label>
-                <input 
-                    type="password" 
-                    name="password" 
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.password}
-                />
-                {formik.touched.password && formik.errors.password ? (
-                    <div>{formik.errors.password}</div>
-                ) : null}
-            </div>
-            <button type="submit">Login</button>
-        </form>
+        <div>
+            <form onSubmit={formik.handleSubmit}>
+                <div>
+                    <label>Username</label>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.username}
+                    />
+                    {formik.touched.username && formik.errors.username ? (
+                        <div>{formik.errors.username}</div>
+                    ) : null}
+                </div>
+                <div>
+                    <label>Password</label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.password}
+                    />
+                    {formik.touched.password && formik.errors.password ? (
+                        <div>{formik.errors.password}</div>
+                    ) : null}
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            
+            <LogoutButton /> {/* Add this line to render the Sign Out button */}
+        </div>
     );
 }
 
