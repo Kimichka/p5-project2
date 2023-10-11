@@ -1,5 +1,19 @@
 import React from 'react';
 
+const styles = {
+    button: {
+        marginTop: '10px',
+        fontSize: '1.2rem',
+        padding: '10px 20px',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s',
+    },
+    buttonHover: {
+        backgroundColor: 'skyblue',
+    },
+};
 
 function LogoutButton() {
     const handleLogout = () => {
@@ -21,7 +35,12 @@ function LogoutButton() {
     };
 
     return (
-        <button onClick={handleLogout}>Sign Out</button>
+        <button
+            onClick={handleLogout}
+            style={{ ...styles.button, ...styles.buttonHover }}
+        >
+            Sign Out
+        </button>
     );
 }
 

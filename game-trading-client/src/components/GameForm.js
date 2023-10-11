@@ -1,6 +1,48 @@
-
 import React from 'react';
 import { useFormik } from 'formik';
+
+const styles = {
+    form: {
+        width: '300px',
+        padding: '20px',
+        borderRadius: '8px',
+        backgroundColor: 'black',
+        color: 'white',
+    },
+    input: {
+        width: '100%',
+        fontSize: '1.2rem',
+        marginBottom: '10px',
+        padding: '8px',
+        border: 'none',
+        borderRadius: '4px',
+    },
+    select: {
+        width: '100%',
+        fontSize: '1.2rem',
+        marginBottom: '10px',
+        padding: '8px',
+        border: 'none',
+        borderRadius: '4px',
+        backgroundColor: 'black',
+        color: 'white',
+    },
+    button: {
+        marginTop: '10px',
+        fontSize: '1.2rem',
+        padding: '10px 20px',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s',
+    },
+    buttonHover: {
+        backgroundColor: 'skyblue',
+    },
+    error: {
+        color: 'red',
+    },
+};
 
 function GameForm(props) {
     const formik = useFormik({
@@ -40,56 +82,64 @@ function GameForm(props) {
                 },
                 body: JSON.stringify(values)
             });
-            
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
 
-            props.onSuccess();  
+            props.onSuccess();
         } catch (error) {
             console.error('There was a problem with the post operation:', error.message);
         }
     };
 
     return (
-        <form onSubmit={formik.handleSubmit}>
+        <form style={styles.form} onSubmit={formik.handleSubmit}>
             <div>
-                <input 
+                <input
                     name="title"
                     type="text"
                     placeholder="Game Title"
                     onChange={formik.handleChange}
                     value={formik.values.title}
+                    style={styles.input}
                 />
-                {formik.errors.title ? <div>{formik.errors.title}</div> : null}
+                {formik.errors.title ? <div style={styles.error}>{formik.errors.title}</div> : null}
             </div>
 
             <div>
-                <input 
+                <input
                     name="description"
                     type="text"
                     placeholder="Game Description"
                     onChange={formik.handleChange}
                     value={formik.values.description}
+                    style={styles.input}
                 />
-                {formik.errors.description ? <div>{formik.errors.description}</div> : null}
+                {formik.errors.description ? <div style={styles.error}>{formik.errors.description}</div> : null}
             </div>
 
             <div>
-                <select 
+                <select
                     name="console"
                     onChange={formik.handleChange}
                     value={formik.values.console}
+                    style={styles.select}
                 >
                     <option value="" label="Select console" />
                     <option value="xbox" label="Xbox" />
                     <option value="ps5" label="PS5" />
                 </select>
-                {formik.errors.console ? <div>{formik.errors.console}</div> : null}
+                {formik.errors.console ? <div style={styles.error}>{formik.errors.console}</div> : null}
             </div>
 
             <div>
-                <button type="submit">Submit</button>
+                <button
+                    type="submit"
+                    style={{ ...styles.button, ...styles.buttonHover }}
+                >
+                    Submit
+                </button>
             </div>
         </form>
     );
