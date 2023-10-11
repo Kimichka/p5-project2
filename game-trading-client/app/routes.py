@@ -175,3 +175,4 @@ def seed_default_user():
         print("Default user added.")
     else:
         print("Default user already exists.")
+

@@ -35,7 +35,7 @@ class Game(db.Model):
 api = Api(app)
 
 # Configure CORS
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000", "allow_headers": ["Content-Type", "Authorization"]}})
 
 @app.route('/')
 def index():
@@ -74,8 +74,17 @@ def login():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/games', methods=['GET', 'POST'])
+@app.route('/games', methods=['GET', 'POST', 'OPTIONS'])
 def games():
+    if request.method == 'OPTIONS':  
+        resp = app.make_default_options_response()
+        headers = None
+        headers = resp.headers
+        headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+        headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        headers['Access-Control-Max-Age'] = '3600'
+        return resp
     if request.method == 'GET':
         games = Game.query.all()
         output = []
@@ -94,6 +103,13 @@ def games():
         db.session.add(new_game)
         db.session.commit()
         return jsonify({'message': 'Game added', 'game': {'id': new_game.id, 'title': new_game.title, 'description': new_game.description}})
+
+@app.route('/games/<int:game_id>', methods=['DELETE'])
+def delete_game(game_id):
+    game = Game.query.get_or_404(game_id)
+    db.session.delete(game)
+    db.session.commit()
+    return jsonify({'message': 'Game deleted successfully'}), 204
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

@@ -76,3 +76,4 @@ class Platform(db.Model, SerializerMixin):
         if len(name) < 2 or len(name) > 50:
             raise AssertionError('Platform name must be between 2 and 50 characters')
         return name
+        
