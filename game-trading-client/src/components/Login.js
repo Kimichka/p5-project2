@@ -2,6 +2,53 @@ import React from 'react';
 import { useFormik } from 'formik';
 import LogoutButton from './LogoutButton';
 
+const styles = {
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',  
+        fontFamily: 'cute-font',  
+        fontSize: '1.5rem',  
+        textAlign: 'center',
+        backgroundColor: 'black', 
+    },
+    form: {
+        width: '300px',  
+        padding: '20px',  
+        borderRadius: '8px',  
+        
+    },
+    input: {
+        width: '100%',
+        fontSize: '1.2rem',  
+        marginBottom: '10px',  
+        padding: '8px',  
+        border: 'none',  
+        borderRadius: '4px', 
+       
+    },
+    label: {
+        fontWeight: 'bold',
+        color: 'skyblue',  
+    },
+    error: {
+        color: 'red', 
+    },
+    button: {
+        marginTop: '10px',  
+        fontSize: '1.2rem',  
+        padding: '10px 20px', 
+        border: 'none',  
+        borderRadius: '4px', 
+        cursor: 'pointer', 
+        transition: 'background-color 0.3s',  
+    },
+    buttonHover: {
+        backgroundColor: 'skyblue',  
+    },
+};
 
 function Login() {
     const formik = useFormik({
@@ -49,37 +96,44 @@ function Login() {
     });
 
     return (
-        <div>
-            <form onSubmit={formik.handleSubmit}>
+        <div style={styles.container}>
+            <form style={styles.form} onSubmit={formik.handleSubmit}>
                 <div>
-                    <label>Username</label>
-                    <input 
-                        type="text" 
-                        name="username" 
+                    <label style={styles.label}>Username</label>
+                    <input
+                        type="text"
+                        name="username"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.username}
+                        style={styles.input}
                     />
                     {formik.touched.username && formik.errors.username ? (
-                        <div>{formik.errors.username}</div>
+                        <div style={styles.error}>{formik.errors.username}</div>
                     ) : null}
                 </div>
                 <div>
-                    <label>Password</label>
-                    <input 
-                        type="password" 
-                        name="password" 
+                    <label style={styles.label}>Password</label>
+                    <input
+                        type="password"
+                        name="password"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
+                        style={styles.input}
                     />
                     {formik.touched.password && formik.errors.password ? (
-                        <div>{formik.errors.password}</div>
+                        <div style={styles.error}>{formik.errors.password}</div>
                     ) : null}
                 </div>
-                <button type="submit">Login</button>
+                <button
+                    type="submit"
+                    style={{ ...styles.button, ...styles.buttonHover }}
+                >
+                    Login
+                </button>
             </form>
-            
+
             <LogoutButton />
         </div>
     );
