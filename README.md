@@ -1,4 +1,4 @@
-# Video Game TRading Website
+# Video Game Trading Website
 
 ## Welcome everyone
 
