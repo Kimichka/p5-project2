@@ -24,8 +24,8 @@ const styles = {
         padding: '8px',
         border: 'none',
         borderRadius: '4px',
-        backgroundColor: 'black',
-        color: 'white',
+        backgroundColor: 'smokeywhite',
+        color: 'black',
     },
     button: {
         marginTop: '10px',
@@ -42,6 +42,8 @@ const styles = {
     error: {
         color: 'red',
     },
+ 
+    
 };
 
 function GameForm(props) {
@@ -119,19 +121,26 @@ function GameForm(props) {
                 {formik.errors.description ? <div style={styles.error}>{formik.errors.description}</div> : null}
             </div>
 
-            <div>
-                <select
-                    name="console"
-                    onChange={formik.handleChange}
-                    value={formik.values.console}
-                    style={styles.select}
-                >
-                    <option value="" label="Select console" />
-                    <option value="xbox" label="Xbox" />
-                    <option value="ps5" label="PS5" />
-                </select>
-                {formik.errors.console ? <div style={styles.error}>{formik.errors.console}</div> : null}
-            </div>
+            <div style={styles.inputContainer}>
+    <select
+        name="console"
+        onChange={formik.handleChange}
+        value={formik.values.console}
+        style={styles.select}
+        
+    >
+        <option value="" label="Select console" />
+        <option value="xbox" label="XboxOriginal" />
+        <option value="xbox360" label="Xbox360" />
+        <option value="xboxSeries" label="XboxSeries" />
+        <option value="psx" label="PSX" />
+        <option value="ps2" label="PS2" />
+        <option value="ps3" label="PS3" />
+        <option value="ps4" label="PS4" />
+        <option value="ps5" label="PS5" />
+    </select>
+    {formik.errors.console ? <div style={styles.error}>{formik.errors.console}</div> : null}
+</div>
 
             <div>
                 <button

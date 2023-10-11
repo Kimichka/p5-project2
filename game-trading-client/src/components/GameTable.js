@@ -1,6 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+const styles = {
+    table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        marginTop: '20px',
+        fontFamily: 'cute-font',
+        fontSize: '1.2rem',
+    },
+    th: {
+        backgroundColor: 'black',
+        color: 'white',
+        padding: '10px',
+        textAlign: 'left',
+    },
+    td: {
+        backgroundColor: 'white',
+        border: '1px solid #ddd',
+        padding: '10px',
+        textAlign: 'left',
+    },
+    deleteButton: {
+        fontSize: '1rem',
+        padding: '5px 10px',
+        backgroundColor: 'red',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+    },
+};
+
 function GameTable({ games, onDelete }) {
     const deleteGame = async (gameId) => {
         try {
@@ -17,28 +48,35 @@ function GameTable({ games, onDelete }) {
     };
 
     return (
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Console</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {games.map(game => (
-                    <tr key={game.id}>
-                        <td>{game.title}</td>
-                        <td>{game.description}</td>
-                        <td>{game.console}</td>
-                        <td>
-                            <button onClick={() => deleteGame(game.id)}>Delete</button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+        <div>
+            {games.map(game => (
+                <table key={game.id} style={styles.table}>
+                    <thead>
+                        <tr>
+                            <th style={styles.th}>Title</th>
+                            <th style={styles.th}>Description</th>
+                            <th style={styles.th}>Console</th>
+                            <th style={styles.th}>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style={styles.td}>{game.title}</td>
+                            <td style={styles.td}>{game.description}</td>
+                            <td style={styles.td}>{game.console}</td>
+                            <td style={styles.td}>
+                                <button
+                                    onClick={() => deleteGame(game.id)}
+                                    style={styles.deleteButton}
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            ))}
+        </div>
     );
 }
 

@@ -30,7 +30,8 @@ class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.String(500), nullable=True)
-
+    #console = db.Column(db.String(50), nullable=True)
+    
 # Initializing the API
 api = Api(app)
 
@@ -85,6 +86,7 @@ def games():
         headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
         headers['Access-Control-Max-Age'] = '3600'
         return resp
+
     if request.method == 'GET':
         games = Game.query.all()
         output = []
