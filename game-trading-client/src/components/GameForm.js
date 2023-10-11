@@ -53,7 +53,44 @@ function GameForm(props) {
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            
+            <div>
+                <input 
+                    name="title"
+                    type="text"
+                    placeholder="Game Title"
+                    onChange={formik.handleChange}
+                    value={formik.values.title}
+                />
+                {formik.errors.title ? <div>{formik.errors.title}</div> : null}
+            </div>
+
+            <div>
+                <input 
+                    name="description"
+                    type="text"
+                    placeholder="Game Description"
+                    onChange={formik.handleChange}
+                    value={formik.values.description}
+                />
+                {formik.errors.description ? <div>{formik.errors.description}</div> : null}
+            </div>
+
+            <div>
+                <select 
+                    name="console"
+                    onChange={formik.handleChange}
+                    value={formik.values.console}
+                >
+                    <option value="" label="Select console" />
+                    <option value="xbox" label="Xbox" />
+                    <option value="ps5" label="PS5" />
+                </select>
+                {formik.errors.console ? <div>{formik.errors.console}</div> : null}
+            </div>
+
+            <div>
+                <button type="submit">Submit</button>
+            </div>
         </form>
     );
 }

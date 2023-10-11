@@ -31,6 +31,11 @@ function GameList() {
         await fetchGames();
     };
 
+    const handleGameDeleted = (deletedGameId) => {
+        const updatedGames = games.filter(game => game.id !== deletedGameId);
+        setGames(updatedGames);
+    };
+
     useEffect(() => {
         fetchGames();
     }, []);
@@ -44,7 +49,7 @@ function GameList() {
             ) : error ? (
                 <p>Error: {error}</p>
             ) : (
-                <GameTable games={games} />
+                <GameTable games={games} onDelete={handleGameDeleted} />
             )}
         </div>
     );
